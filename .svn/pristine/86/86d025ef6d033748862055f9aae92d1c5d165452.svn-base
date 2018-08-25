@@ -1,0 +1,124 @@
+
+<template id="my-commanTitle">
+	<div ref="drag" class="drag commonTitle" @mousedown="MoveIt" style="box-shadow:0 0 1px  #6bf;top:40%;left:45%;position: absolute;height:100px;width:140px;cursor:move;overflow:hidden;text-align:center;">
+							
+		<div style="position:absolute;left:0;top:0;z-index:99;background:#6bf;font-size:18px;">
+			<div class="copy" @click="copyIt" style="cursor:pointer;float:left;padding:2px;">
+				<a href="#"><i class="el-icon-document"></i></a>
+			</div>
+			<div class="deleate" @click="deleteIt" style="cursor:pointer;float:left;padding:2px;">
+				<a><i class="el-icon-delete"></i></a>
+			</div>
+		</div>
+		
+		<div class="reSize" @mousedown="resizeIt" style="position:absolute;right:0;bottom:0;z-index:99;">
+			<el-button size="mini" style="cursor:se-resize;background-color: #6bf;font-size:18px;background:#6bf;border:0;border-radius: 0;">
+				<i class="el-icon-star-off" style="cursor:se-resize;"></i>
+			</el-button>
+		</div>
+		<slot>这是个插槽</slot>
+	</div>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				wordsItems:[{
+					Img:'../../static/img/scrollTable.png',
+					name:'轮播列表',
+					code:''
+					},
+					{
+						Img:'../../static/img/comman-title.png',
+						name:'通用标题',
+						code:`<div style="line-height:100px;display:inline-block;">我是通用标题</div>`
+					},
+					{
+						Img:'../../static/img/scrollText.png',
+						name:'跑马灯'
+					},
+					{
+						Img:'../../static/img/linesText.png',
+						name:'多行文本'
+					},
+					{
+						Img:'../../static/img/key-value.png',
+						name:'键值表格'
+					}
+				]
+			}
+		},
+		methods: {
+			MoveIt:function(e){
+					let oDrag = this.$el;//获取操作目标对象
+
+					var offsetParent = oDrag.parentNode;//获取父元素
+					var parentOffsetWidth = offsetParent.offsetWidth; //获取父元素的宽度
+					var parentOffsetLeft = offsetParent.offsetLeft; //获取父元素的左边距
+					var parentOffsetTop = offsetParent.offsetTop; //获取父元素的上边距
+
+					let disx = e.pageX - oDrag.offsetLeft;
+	                let disy = e.pageY - oDrag.offsetTop;
+	                document.onmousemove = function(e){
+	                	//调整控件位置，并转化成百分比的形式
+	                	oDrag.style.left = 100*(e.pageX - disx)/parentOffsetWidth+'%';
+	                    oDrag.style.top = 100*(e.pageY-disy)/(parentOffsetWidth*0.6)+'%';
+	                	
+	                } 
+	                document.onmouseup = function(e){
+	                    document.onmousemove = document.onmouseup = null;
+                	}
+
+				},
+				resizeIt:function(e){
+				 	//console.log(this.$el);
+					let oDrag = this.$el;
+				 	//阻止事件冒泡
+				 	e.stopPropagation();
+				 	let disx = oDrag.offsetLeft;
+	                let disy = oDrag.offsetTop;
+	                console.log(this.parentNode);
+	                document.onmousemove = function(e){
+	                	oDrag.style.width = e.pageX - disx-195+'px';
+	                    oDrag.style.height = e.pageY - disy-85+'px';
+	                } 
+	                document.onmouseup = function(e){
+	                    document.onmousemove = document.onmouseup = null;
+                	}
+				 },
+				 deleteIt:function(e){
+					let oDrag = this.$el;
+				 	//阻止事件冒泡
+				 	e.stopPropagation();
+				 	//e.cancelBubble = true;
+				 	if(confirm("删除之后将不能恢复,确定删除吗？")){
+				 		oDrag.parentNode.removeChild(oDrag);
+				 	}else{
+				 		console.log('取消删除元素--'+oDrag.innerHTML);
+				 	}
+				 	
+				 },
+				 copyIt:function(e){
+					let oDrag = this.$el;
+				 	//console.log(oDrag);
+				 	let oDrag1 = oDrag;
+				 	//阻止事件冒泡
+				 	e.stopPropagation();
+				 
+				
+					console.log();
+					
+				 	
+				 }
+		
+
+		}
+	}
+
+</script>
+
+<style scoped lang="scss">
+	@import '~scss_vars';
+	
+</style>

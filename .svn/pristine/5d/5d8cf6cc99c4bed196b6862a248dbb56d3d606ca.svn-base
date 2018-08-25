@@ -1,0 +1,496 @@
+
+<!-- 右侧折叠按钮 -->
+<template>
+	<el-row class="container">
+		<el-button  @click.prevent="collapse" style="position:fixed;z-index:99;right:0px;margin-top:6px;border-right: 0;text-align: center;padding:8px;background-color: rgba(250,253,250,0.9);">
+				<i :class="collapseIcon" @click="changeIcon()" title="折叠/展开"></i>
+		</el-button>
+		<aside id="aside-right" :class="collapsed?'menu-collapsed':'menu-expanded'" style="background-color: #fff;border-left:1px solid #dcdee3">
+	        <div class="pageSetting">
+	        	<div class="style-pannel .pannal">
+				  	<h3 style="padding:9px 0;margin:0;width:100%;text-align: center;border-bottom:1px solid #ccc;">
+		        		<span>页面设置</span>
+		        	</h3>
+				  	<div class="contain" style="padding:5px 10px 0 20px;font-size: 12px;">
+				  		<div class="screenSize contain-item" style="padding:0;line-height: 35px;height:50px;">
+				  			<span>屏幕大小</span>
+				  			<div class="data-right" style="margin-left: 120px;">
+				  				<div class="screenWidth input-num">
+				  					<el-input-number  v-model="screenWidth" size="small" :min="975" :max="4000"></el-input-number>
+				  					<span>宽度</span>
+				  				</div>
+				  				
+								
+				  				<div class="screenWidth input-num">
+									<el-input-number  v-model="screenHeight" size="small" :min="400" :max="2200"></el-input-number>
+									<span>高度</span>
+								</div>
+				  			</div>
+				  		</div>
+				  		<div class="backgroundImg contain-item" style="padding:0;line-height: 40px;">
+				  			<span>背景图</span>
+				  			<div class="data-right" style="margin-left: 60px;">
+				  				<div class="imgContainer">
+				  					<img src="../assets/bg.png" alt="背景图片" width="90" height="60">
+				  					<p style="font-size: 0.8em;color:#888;margin:-10px;">点击或将文件拖拽到这里更换</p>
+				  				</div>
+				  			</div>
+				  		</div>
+
+				  		<div class="zoomType contain-item" style="padding:0;line-height: 40px;">
+				  			<span>缩放方式</span>
+				  			<div class="data-right" style="margin-left: 60px;">
+				  				<ul style="margin: -20px auto 5px 20px;line-height: 34px;">
+				  					<li>
+				  						<el-radio type="radio" v-model="zoomType" label="1"><span>等比缩放宽度铺满</span></el-radio>
+				  					</li>
+				  					<li>
+				  						<el-radio type="radio" v-model="zoomType" label="2"><span>等比缩放高度铺满</span></el-radio>
+				  					</li>
+				  					<li>
+				  						<el-radio type="radio" v-model="zoomType" label="3"><span>全屏铺满</span></el-radio>
+				  					</li>
+				  				</ul>
+				  			</div>
+				  		</div>
+				  		<div class="backgroundImg contain-item" style="padding:0;line-height: 40px;">
+				  			<div>
+					  			<span>栅格间距</span>
+					  			<span class="data-right" style="margin-left: 70px;">
+					  				<el-input-number  v-model="Space" size="small" :precision="1" :step="0.5" :max="10">
+									</el-input-number>
+								</span>
+				  			</div>
+				  			<div>
+					  			<span>背景图</span>
+					  			<span class="data-right" style="margin-left: 82px;">
+					  				<el-button type="primary" plain>截取封面</el-button>
+									<img src="../assets/bg.png" alt="背景图片" width="180" height="120"  style="margin:5px 0 0 120px;">					  				
+								</span>
+				  			</div>
+				  		</div>
+
+				  		<div class="reNew contain-item" style="padding:0;line-height: 40px;border:0;">
+				  			<div style="margin-top:5px;">
+					  			<span>重置</span>
+					  			<span class="data-right" style="margin-left: 92px;">
+					  				<el-button type="primary" plain>恢复默认背景</el-button>					  				
+								</span>
+				  			</div>
+				  		</div>
+
+				  	</div>
+				</div>
+	        </div>
+	        <div class="widgetSetting" style="display: none;">
+				<el-tabs type="border-card" style="height:100%;">
+				  <el-tab-pane label="样式">
+				  	<div class="style-pannel .pannal">
+					  	<h3>
+					  		<span style="padding:0 15px">通用标题</span>
+					  	</h3>
+					  	<el-collapse v-model="activeNames" style="border-left:0;">
+						  <el-collapse-item title="全局" name="1">
+						  	<label for="textType">文本样式</label>
+						    <ul>
+						    	<label for="" style="">
+						    		<li style="padding:5px;line-height:30px;border-bottom: 1px solid #ccc;"><span for="">字体样式</span>  
+							    		<el-select v-model="fontValue" placeholder="请选择">
+										     <el-option
+											      v-for="item in fontOptions"
+											      :key="item.value"
+											      :label="item.label"
+											      :value="item.value">
+											    </el-option>
+											  </el-select>
+										</el-select>
+									</li>
+						    	</label>
+						    	<label for="">
+							    	<li  style="padding:5px;line-height:30px;border-bottom: 1px solid #ccc;"><span for="">排列方式</span>  
+							    		<el-select v-model="positionValue" placeholder="请选择">
+										     <el-option
+											      v-for="item in positionOptions"
+											      :key="item.value"
+											      :label="item.label"
+											      :value="item.value">
+											    </el-option>
+											  </el-select>
+										</el-select>
+							    	</li>
+						    	</label>
+						    </ul>
+						  </el-collapse-item>
+						  <el-collapse-item title="标题" name="2">
+						    <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
+						    <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+						  </el-collapse-item>
+						  <el-collapse-item title="翻牌器" name="3">
+						    <div>简化流程：设计简洁直观的操作流程；</div>
+						    <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
+						    <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
+						  </el-collapse-item>
+						  <el-collapse-item title="交互" name="4">
+						    <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
+						    <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+						  </el-collapse-item>
+						</el-collapse>
+					</div>
+					</el-tab-pane>
+				  <el-tab-pane label="数据">
+				  	<div class="data-pannel .pannal">
+					  	<h3>通用标题</h3>
+					</div>
+				  </el-tab-pane>
+				  <el-tab-pane label="交互">
+				  	<div class="interactive-pannel .pannal">
+					  	<h3>通用标题</h3>
+					</div>
+				  </el-tab-pane>
+				</el-tabs>
+	        </div>
+
+		</aside>
+	</el-row>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				sysName:'VUEADMIN',
+				collapsed:false,
+				collapseIcon:'el-icon-d-arrow-right',
+				fontValue:'',
+				activeNames:'',
+				screenWidth:1,
+				screenHeight:1,
+				Space:5,
+				zoomType:'2',
+				 fontOptions: [{
+			          value: '选项1',
+			          label: '宋体'
+			        }, {
+			          value: '选项2',
+			          label: '楷体'
+			        }, {
+			          value: '选项3',
+			          label: '罗马'
+			        }, {
+			          value: '选项4',
+			          label: '新宋'
+			        }, {
+			          value: '选项5',
+			          label: '等线'
+			        }],
+				 positionValue:'',
+				 positionOptions: [{
+			          value: '选项1',
+			          label: '标题在上'
+			        }, {
+			          value: '选项2',
+			          label: '标题在下'
+			        }, {
+			          value: '选项3',
+			          label: '标题在左'
+			        }],
+				form: {
+					name: '',
+					region: '',
+					date1: '',
+					date2: '',
+					delivery: false,
+					type: [],
+					resource: '',
+					desc: ''
+				}
+			}
+		},
+		methods: {
+			changeIcon(){
+				if(this.collapsed){
+					this.collapseIcon='el-icon-d-arrow-right';
+				}else{
+					this.collapseIcon='el-icon-d-arrow-left';
+				}
+			},
+			onSubmit() {
+				console.log('submit!');
+			},
+			handleopen() {
+				//console.log('handleopen');
+			},
+			handleclose() {
+				//console.log('handleclose');
+			},
+			handleselect: function (a, b) {
+			},
+			//退出登录
+			logout: function () {
+				var _this = this;
+				this.$confirm('确认退出吗?', '提示', {
+					//type: 'warning'
+				}).then(() => {
+					sessionStorage.removeItem('user');
+					_this.$router.push('/login');
+				}).catch(() => {
+
+				});
+
+
+			},
+			//折叠导航栏
+			collapse:function(){
+				this.collapsed=!this.collapsed;
+			},
+			showMenu(i,status){
+				this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-'+i)[0].style.display=status?'block':'none';
+			}
+		},
+		mounted() {
+			var user = sessionStorage.getItem('user');
+			if (user) {
+				user = JSON.parse(user);
+				this.sysUserName = user.name || '';
+				this.sysUserAvatar = user.avatar || '';
+			}
+
+		}
+	}
+
+</script>
+
+
+<style scoped lang="scss">
+	@import '~scss_vars';
+	.input-num{
+		width:90px;
+		float:left;
+		margin-right:10px;
+	}
+	.input-num>span{
+		width:90px;
+		text-align:center;
+		font-size:8px;
+		line-height:10px;
+		float:left;
+	}
+	.el-input-number__increase {
+	    line-height: 28px;
+	    width: 20px;
+	    font-size: 10px;
+	}
+	.el-input-number--small .el-input-number__decrease {
+	    right: 21px;
+	}
+	li{
+		list-style-type:none; 
+	}
+	.imgContainer{
+		margin:-20px auto 10px 60px;
+		width:170px;
+		height:90px;
+		border:1px dashed #ccc;
+		text-align:center;
+		padding:15px;
+	}
+	.data-right{
+		margin:-35px 0 5px auto;
+	}
+	.contain-item{
+		border-bottom:1px solid #ccc;
+	}
+	.el-input-number--small .el-input-number__decrease {
+	    right: 20px;
+	}
+	.el-input-number--small {
+	    width: 90px;
+	    margin-right:5px;
+/* 	    top: 10px; */
+	}
+	.el-collapse-item__header{
+		color:#333;
+		border-left:0;
+	}
+	.pannal{
+		border-bottom:1px solid #ccc;
+	}
+	.el-tabs--border-card>.el-tabs__content{
+		padding:0 15px;
+	}
+	.el-tabs--border-card>.el-tabs__header{
+		background:#fff;
+	}
+	.el-tabs__item{
+		width:150px !important;
+	    height: 45px;
+	    line-height: 45px;
+	    background:#fff;
+	    color:#333;
+	}
+	.el-menu--horizontal .el-menu-item {
+	    float: left;
+	    width: 33%;
+	    height: 45px;
+	    line-height: 45px;
+	    background:#fff;
+	    color:#333;
+	}
+	.el-menu-item.is-active {
+	    background-color: #00c1de;
+		box-shadow:0 0 1px #2196f3;
+	}
+	.el-menu--horizontal>.el-menu-item:hover{
+		border-bottom: 2px solid #000000;
+	}
+	#aside-right{
+		color:#666;
+		position:absolute;
+		margin-top:15%;
+		height:85%;
+		right:0;
+		top:0;
+		background-color: #fff;
+		overflow: hidden;
+	}
+	.navbar-item{
+		margin:0;
+		position:releative;
+	}
+	.z-axis-list{
+		overflow:hidden;
+		width:100%;
+		text-align:center;
+	}
+	.z-axis-item{
+		line-height:30px;
+		width:100%;
+		text-align:left;
+		height:30px;
+	}
+ 	.z-axis-item:active{
+		border:1px solid #5af;
+		background-color:#8df;
+	} 
+	.container {
+		position: absolute;
+		top: 0px;
+		bottom: 0px;
+		right:0;
+		width: 400px;
+		.header {
+			height: 60px;
+			line-height: 60px;
+			background: $color-primary;
+			color:#fff;
+			.userinfo {
+				text-align: right;
+				width:380px;
+				padding-right: 50px;
+				float: right;
+				.userinfo-inner {
+					cursor: pointer;
+					color:#fff;
+					img {
+						width: 40px;
+						height: 40px;
+						border-radius: 20px;
+						margin: 10px 0px 10px 10px;
+						float: right;
+					}
+				}
+			}
+			.backBtn {
+				height:60px;
+				font-size: 22px;
+				padding-left:20px;
+				padding-right:20px;
+				img {
+					width: 40px;
+					float: left;
+					margin: 10px 10px 10px 18px;
+				}
+				.txt {
+					color:#fff;
+				}
+			}
+			.backBtn-width{
+				width:150px;
+			}
+			.tools{
+				padding: 0px 23px;
+				width:14px;
+				height: 60px;
+				line-height: 60px;
+				cursor: pointer;
+			}
+		}
+		.main {
+			display: flex;
+			// background: #324057;
+			position: absolute;
+			top: 60px;
+			bottom: 0px;
+			overflow: hidden;
+			aside {
+				flex:0 0 230px;
+				width: 230px;
+				// position: absolute;
+				// top: 0px;
+				// bottom: 0px;
+				.el-menu{
+					height: 100%;
+				}
+				.collapsed{
+					width:60px;
+					.item{
+						position: relative;
+					}
+					.submenu{
+						position:absolute;
+						top:0px;
+						left:60px;
+						z-index:99999;
+						height:auto;
+						display:none;
+					}
+
+				}
+			}
+			.menu-collapsed{
+				flex:0 0 0;
+				width: 0px;
+			}
+			.menu-expanded{
+				flex:0 0 360px;
+				width: 360px;
+			}
+			.content-container {
+				// background: #f1f2f7;
+				flex:1;
+				// position: absolute;
+				// right: 0px;
+				// top: 0px;
+				// bottom: 0px;
+				// left: 230px;
+				overflow-y: scroll;
+				padding: 20px;
+				.breadcrumb-container {
+					//margin-bottom: 15px;
+					.title {
+						width: 200px;
+						float: left;
+						color: #475669;
+					}
+					.breadcrumb-inner {
+						float: right;
+					}
+				}
+				.content-wrapper {
+					background-color: #fff;
+					box-sizing: border-box;
+				}
+			}
+		}
+	}
+</style>

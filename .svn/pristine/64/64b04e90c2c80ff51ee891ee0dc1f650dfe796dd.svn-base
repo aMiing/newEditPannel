@@ -1,0 +1,264 @@
+
+<template id="newPannel">
+	<section>
+		<el-row>
+		 <el-col class="pannal">
+		    <el-card :body-style="{ padding: '0px' }">
+		      <div @click="dialogFormVisible = true" id="addPannel" style="padding:5px 10px 12px 10px;text-align: center;padding-top: 30px">
+				<img src="../../assets/add.jpg" alt="新增可视化" class="" width="100">
+			        <div >
+			        	<a id="add" href="#" style="line-height: 36px;font-size:18px;">新建可视化</a>
+			        </div>
+		      </div>
+		    </el-card>
+		 </el-col>
+
+			<!-- 新屏幕的信息录入表单弹窗 -->
+			<el-dialog title="新建屏幕" :visible.sync="dialogFormVisible">
+			  <el-form :model="theNewPannel">
+			    <el-form-item label="屏幕名称" :label-width="formLabelWidth">
+			    	<label for="">屏幕名称</label>
+			      <el-input v-model="theNewPannel.title" auto-complete="on"></el-input>
+			    </el-form-item> 
+			  </el-form>
+			  <div slot="footer" class="dialog-footer">
+			    <el-button @click="dialogFormVisible = false;">取 消</el-button>
+			    <el-button type="primary" @click="addPannel()">确 定</el-button>
+			  </div>
+			</el-dialog>
+			
+			<el-col class="pannal" v-for="(pannel, index) in pannels">
+		    <el-card :body-style="{ padding: '0px' }">
+		      	<!-- 编辑功能的模态框 -->
+		      	<div>
+			      	<div ref='dialog' id="dialog" @mouseover="showEdit(index)"  @mouseout="hiddenEdit(index)" style="opacity:0;">
+			      		<div class="dialog-modal"></div>
+			      		<i class="el-icon-delete"></i>
+			      		<el-button type="primary" class="edit" @click="openWindow()">编辑</el-button>
+			      	</div>
+		      		<img :src="pannel.img" class="image" height="145">
+		      	</div>
+		      <div style="padding:5px 10px 12px 10px;">
+				<i class="el-icon-edit" @click="modifyPannelTitle(index)"></i>
+		        <span style="line-height: 36px;">{{pannel.title}}</span>
+		        <div class="line" style="height:1px;width:100%;background-color: #ccc;margin-bottom: 10px;"></div>
+		        <!-- 操作按钮 -->
+		        <el-row type="flex" class="row-bg" justify="space-around">
+				  <el-col :span="7">
+				  	<div class="grid-content bg-purple">
+					<i class="el-icon-plus"></i>复制</div>
+				  </el-col>
+				  <el-col :span="7">
+				  	<div class="grid-content bg-purple-light">
+					<i class="el-icon-plus"></i>预览</div>
+				  </el-col>
+				  <el-col :span="8">
+				  	<div class="grid-content bg-purple" @click="publishedOr(pannel.published)">
+				  	<el-switch v-model="pannel.published"  :width='a' active-text="发布" inactive-text="">
+					</el-switch><label>发布</label></div>
+				  </el-col>
+				</el-row>
+
+		      </div>
+		    </el-card>
+
+				<!-- 发布确认弹窗 -->
+				<el-dialog title="确定要发布吗？" :visible.sync="dialogVisible"
+				  width="30%" >
+				  <span>发布之后可以通过链接分享和访问</span>
+				  <span slot="footer" class="dialog-footer">
+				    <el-button @click="dialogVisible = false">取 消</el-button>
+				    <el-button type="primary" @click="dialogVisible = false;pannel.published=true">确 定</el-button>
+				  </span>
+				</el-dialog>
+		  </el-col>
+	<!-- 二级路由模式
+			<router-view v-for="(o, index) in num" :key="o" :offset="index > 0 ? 2 : 0"></router-view>
+	 -->
+		</el-row>
+	</section>
+
+</template>
+
+	
+<script>
+	
+
+	export default {
+	   data() {
+	      return {
+	        dialogFormVisible : false,
+	        dialogVisible:false,
+	        dialogEditVisible:false,
+	        a:40,
+		    formLabelWidth: '120px',
+	        pannels:[
+				{
+					"id":1,
+					"title":"测试屏幕",
+					"img":"../../static/img/show.png",
+					"published":true,
+				},
+				{
+					"id":2,
+					"title":"我寄几的屏幕",
+					"img":"../../static/img/1.jpg",
+					"published":false,
+				},
+				{
+					"id":3,
+					"title":"神马看板",
+					"img":"../../static/img/2.jpg",
+					"published":false,
+				},
+				{
+					"id":4,
+					"title":"测试专用",
+					"img":"../../static/img/4.jpg",
+					"published":false,
+				},
+				{
+					"id":5,
+					"title":"测试专用",
+					"img":"../../static/img/5.jpg",
+					"published":false,
+				},
+			],
+			theNewPannel:{'title':'新屏幕','img':'../../static/img/4.jpg','published':0}
+	      }
+	    },  
+	    beforeCreated(){
+
+	    },
+	 /*   beforeCreate:function(){
+	    	this.$http.get('http://localhost:8080/test.txt').then(function(res){
+	    		alert(res.data);
+	    	},function(res){
+	    		alert('失败');
+	    	})
+	    },*/
+	    methods:{
+	    	openWindow(){
+	    		window.open('http://localhost:8080/#/edit','_blank');
+	    	},
+	    	showEdit(index){
+	    		this.$refs.dialog[index].style.opacity = 1;
+	    		/*this.style.opacity=1;*/
+	    	},
+	    	hiddenEdit(index){
+	    		/*console.log(this.$refs.dialog[index].style);*/
+	    		this.$refs.dialog[index].style.opacity = 0;
+	    		/*this.style.opacity=1;*/
+	    	},
+	    	publishedOr(info){
+	    		if(info==false){
+	    			this.dialogVisible = true;
+	    		}
+	    	},
+	    	addPannel(){
+	    		//console.log('3'+this.successed);
+	    		this.pannels.unshift(this.theNewPannel);
+	    		this.dialogFormVisible = false;
+	    		this.theNewPannel={'title':'新屏幕','img':'../../static/img/4.jpg','published':0};
+	      		
+	    	},
+	    	modifyPannelTitle(index){
+	    		this.$prompt('请输入新标题', '提示', {
+		          confirmButtonText: '确定',
+		          cancelButtonText: '取消',
+		          
+		        }).then(({ value }) => {
+		          this.$message({
+		            type: 'success',
+		            message: '标题成功修改为: ' + value
+		          });
+		          /*this.pannels[index].title = value;*/
+		        }).catch(() => {
+		          this.$message({
+		            type: 'info',
+		            message: '取消修改'
+		          });       
+		        });
+	    		
+	    	}
+	    }
+	    
+	}
+			
+
+</script>
+
+<style>
+#add{
+	color:gray;
+	text-decoration: none;
+}
+#add:hover{
+	color:#43ccbf;
+	text-decoration: none;
+}
+.edit{
+	position:absolute;
+	margin:45px 90px;
+	background-color: #6bf;
+	border-color: #6bf;
+	width:60px;
+	z-index: 11;
+}
+el-card{
+	position: absolute;
+}
+#dialog{
+	 /* opacity: 0;  */
+}
+#dialog>i{
+	position:absolute;
+	margin:5px 215px;
+	font-size: 18px;
+	z-index: 11;
+}
+.dialog-modal{
+	position: absolute;
+	width:240px;
+	height:145px;
+	z-index: 9;
+	background-color: gray;
+	opacity: 0.6;
+}
+ .time {
+    font-size: 13px;
+    color: #999;
+  }
+  .el-switch__label{
+  	z-index: 0;
+  }
+  
+  .bottom {
+    margin-top: 13px;
+    line-height: 12px;
+  }
+
+  .button {
+    padding: 0;
+    float: right;
+  }
+
+  .image {
+    width: 100%;
+    display: block;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+      display: table;
+      content: "";
+  }
+  
+  .clearfix:after {
+      clear: both
+  }
+  .el-switch__label{
+	display: none;
+  }
+
+</style>

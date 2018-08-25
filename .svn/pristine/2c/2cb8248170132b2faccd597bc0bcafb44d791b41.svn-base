@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>test</title>
+</head>
+<link rel="stylesheet" href="http://at.alicdn.com/t/font_796167_2cwn77dxwwg.css">
+<body>
+	<div class="box">
+		<marquee behavior="" direction="left" align="middle" bgcolor="green" height="100px">哈哈撒或多或少都会撒谎的撒</marquee>
+	</div>
+	<i class="iconfont icon-guanxi" style="color:green;font-size: 2em;"></i>
+	<!-- <marquee width=150 bgcolor=ffaaaa align=bottom height=80 style="display: table;"><span style="display: table-cell;vertical-align: middle;">啦啦啦，我会移动耶！</span></marquee>
+	<div id="component-id" style="width: 200px; height: 100px;"></div>
+	<div id="bar-meter" style="width: 100px; height: 200px;"></div> -->
+</body>
+<script src="https://unpkg.com/zeu/lib/zeu.min.js"></script>
+<script>
+
+	new Promise(function(resolve,reject){
+		setTimeout(function(){
+			console.log(567);
+			resolve();
+		},3000);
+
+	}).then(function(){
+		setTimeout(function(){
+			console.log(123);
+		},2000)
+	})
+
+	new Promise(function(resolve,reject){
+	    console.log('Promise');
+	    resolve();
+	}).then(function(){
+	    console.log('resolved');
+	});
+	console.log('Hi!');
+
+</script>
+</html>
