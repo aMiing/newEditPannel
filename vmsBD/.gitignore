@@ -3,3 +3,4 @@ node_modules/
 npm-debug.log
 .editorconfig
 dist/
+nodejs_data/
